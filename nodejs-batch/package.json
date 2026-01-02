@@ -1,0 +1,32 @@
+{
+  "name": "ip-registry-data-processor",
+  "version": "1.0.0",
+  "description": "IP Registry Data Processing Batch System - Node.js Implementation",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "keywords": [
+    "ip-registry",
+    "ip-allocation",
+    "batch-processing",
+    "ipv4",
+    "ipv6",
+    "cidr"
+  ],
+  "author": "System Administrator",
+  "license": "MIT",
+  "dependencies": {
+    "cidr-tools": "^11.0.3",
+    "dotenv": "^17.2.3",
+    "mysql2": "^3.6.5",
+    "undici": "^7.16.0",
+    "yargs": "^17.7.2"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "bin": {
+    "ip-processor": "src/index.js"
+  }
+}

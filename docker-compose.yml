@@ -1,0 +1,33 @@
+# リプレイス開発用
+volumes:
+  mysql_db:
+    driver: local
+services:
+  mysql_db:
+    image: akira345/mysql8-ja_jp-locale:latest
+    volumes:
+      - mysql_db:/var/lib/mysql
+    env_file:
+      - ./mysql.env
+    environment:
+      TZ: "Asia/Tokyo"
+    ports:
+      - '3306:3306'
+  web:
+    image: akira345/php8app-dev:release-8.3
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./slim-iplist:/var/www/web
+    environment:
+      MEMCACHED_HOST: "memcached_srv"
+      DOCUMENT_ROOT: "/var/www/web/public"
+    depends_on:
+      - mysql_db
+      - memcached
+    links:
+      - mysql_db:mysql_db
+      - memcached:memcached_srv
+  memcached:
+    image: memcached:latest

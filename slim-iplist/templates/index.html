@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>IPアドレス割り当て検索プログラム</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 20px; }
+      table { border-collapse: collapse; margin-top: 20px; }
+      td { padding: 8px; border: 1px solid #ddd; }
+      .header { background-color: #f0f0f0; font-weight: bold; }
+      .error { color: red; }
+      .ipv6 { background-color: #e6f3ff; }
+      .ipv4 { background-color: #fff6e6; }
+    </style>
+  </head>
+  <body>
+    <h2>IPアドレス割り当て検索プログラム</h2>
+    <p>IPアドレスを入力してください（IPv4 または IPv6 対応）</p>
+    <form action="index.php" method="get">
+      <input type="text" name="in_ip" value="{{ in_ip }}" size="40" placeholder="例: 192.168.1.1 または 2001:db8::1" />
+      <input type="submit" name="submit" value="検索" />
+    </form>
+    <br />
+    <br />
+    {% if data_flg == "OK" %}
+    <table border="1" class="{% if ip_version == 'IPv6' %}ipv6{% else %}ipv4{% endif %}">
+      <tbody>
+        <tr class="header">
+          <td colspan="2" align="CENTER">検索結果（{{ in_ip }} - {{ ip_version|default('IPv4') }}）</td>
+        </tr>
+        <tr>
+          <td><strong>IPアドレス</strong></td>
+          <td>{{ in_ip }}</td>
+        </tr>
+        <tr>
+          <td><strong>IPバージョン</strong></td>
+          <td>{{ ip_version|default('IPv4') }}</td>
+        </tr>
+        <tr>
+          <td><strong>ホスト名</strong></td>
+          <td>{{ hostname }}</td>
+        </tr>
+        <tr>
+          <td><strong>ネットブロック/CIDR</strong></td>
+          <td>{{ netblock_cidr }}({{ str_address_count }}個のアドレス)</td>
+        </tr>
+        {% if ip_version == 'IPv6' %}
+        <tr>
+          <td><strong>プレフィックス長</strong></td>
+          <td>/{{ prefix_length|default('不明') }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+          <td><strong>割り当てブロック</strong></td>
+          <td>{{ ip_address_text }}{% if ip_version != 'IPv6' %} - {{ str_address_count }} addresses{% endif %}</td>
+        </tr>
+        <tr>
+          <td><strong>レジストリ</strong></td>
+          <td>{{ registry_name|upper }} ({{ registry_code|upper|default('不明') }})</td>
+        </tr>
+        <tr>
+          <td><strong>割り当て日</strong></td>
+          {% if allocation_date != 0 and allocation_date != "" %}
+          <td>{{ allocation_date }}</td>
+          {% else %}
+          <td>不明</td>
+          {% endif %}
+        </tr>
+        <tr>
+          <td><strong>国/地域</strong></td>
+          <td>{{ country_code }}{% if country_name %}: {{ country_name }}{% endif %}</td>
+        </tr>
+        <tr>
+          <td><strong>ステータス</strong></td>
+          <td>{{ status|default('不明') }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+    <h3>WHOIS情報</h3>
+    <pre style="background-color: #f5f5f5; padding: 10px; border: 1px solid #ccc; overflow-x: auto;">{{ whois_data|nl2br }}</pre>
+    {% endif %} 
+    
+    {% if data_flg == "NG" %} 
+    <div class="error">
+      <h3>データが見つかりません</h3>
+      <p>入力されたIPアドレスまたはホスト名「{{ in_ip }}」に対する割り当て情報が見つかりませんでした。</p>
+      {% if error %}
+        <p>エラー詳細: {{ error }}</p>
+        {% if hostname %}
+          <p>ホスト名: {{ hostname }}</p>
+        {% endif %}
+      {% endif %}
+    </div>
+    {% endif %}
+  </body>
+</html>
