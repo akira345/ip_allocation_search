@@ -253,7 +253,7 @@ class RegistryDataProcessor {
         continue;
       }
 
-      const [_registry, country, type, ip, value, date, status, ...extended] = parts;
+      const [, country, type, ip, value, date, status, ...extended] = parts;
 
       // IPv4/IPv6のみ処理、サマリー行はスキップ
       if ((type !== 'ipv4' && type !== 'ipv6') || date === 'summary') {

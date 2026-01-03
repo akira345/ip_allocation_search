@@ -276,7 +276,20 @@ class DatabaseManager {
    */
   async _executeInitialDataFile(filePath, tableName) {
     try {
-      const dataSql = await fs.readFile(filePath, 'utf8');
+      // ファイルパスの安全性バリデーション
+      if (typeof filePath !== 'string' || 
+          !filePath.endsWith('.sql') || 
+          filePath.includes('..') || 
+          !filePath.includes('sql/')) {
+        throw new Error(`無効なまたは安全でないSQLファイルパス: ${filePath}`);
+      }
+      
+      // pathモジュールで正規化
+      const path = require('path');
+      const normalizedPath = path.resolve(filePath);
+      
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
+      const dataSql = await fs.readFile(normalizedPath, 'utf8');
       console.log(`🔍 ${tableName}用SQLファイル読み込み: ${(dataSql.length / 1024).toFixed(1)}KB`);
 
       // INSERT文を抽出（複数行対応）
