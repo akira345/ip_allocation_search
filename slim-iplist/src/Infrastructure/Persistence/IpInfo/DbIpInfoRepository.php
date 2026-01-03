@@ -210,8 +210,7 @@ class DbIpInfoRepository implements IpInfoRepository
     // 新しいip_allocationsテーブルからJPのサブネットを取得
     $sql = "SELECT 
               ia.netblock_cidr,
-              ia.ip_version,
-              ia.ip_address_text
+              ia.ip_version
             FROM ip_allocations ia
             LEFT JOIN countries c ON ia.country_code = c.country_code
             WHERE c.country_code = 'JP'
@@ -221,11 +220,14 @@ class DbIpInfoRepository implements IpInfoRepository
       $db = getDB();
       $stmt = $db->prepare($sql);
       $stmt->execute();
-      
+
       $render = array();
       while ($row = $stmt->fetch()) {
         if (!empty($row["netblock_cidr"])) {
-          array_push($render, $row["netblock_cidr"]);
+          array_push($render, [
+            "netblock_cidr" => $row["netblock_cidr"], 
+            "ip_version" => $row["ip_version"]
+          ]);
         }
       }
     } catch (\PDOException $e) {
