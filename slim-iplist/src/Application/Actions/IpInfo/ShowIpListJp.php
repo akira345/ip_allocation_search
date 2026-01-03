@@ -21,12 +21,12 @@ class ShowIpListJp extends IpInfoAction
    * 日本のサブネット一覧をデータベースから取得しJSONで返す
    * @return Response JSONレスポンス
    */
-  protected function action(): Response
-  {
-    // 日本のサブネット情報を取得
-    $render = $this->ipInfoRepository->findJpSubnets();
-    $this->logger->info("Generate IPlist for JP.");
-    // JSON形式でレスポンスを返す
-    return $this->respondWithData($render);
-  }
+    protected function action(): Response
+    {
+      // 日本のサブネット情報を取得
+        $render = $this->ipInfoRepository->findJpSubnets();
+        $this->logger->info("Generate IPlist for JP.");
+      // JSON形式でレスポンスを返す
+        return $this->respondWithData($render);
+    }
 }

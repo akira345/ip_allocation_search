@@ -19,16 +19,16 @@ use Slim\Views\Twig;
 abstract class IpInfoAction extends Action
 {
   /** @var IpInfoRepository IP情報リポジトリ */
-  protected $ipInfoRepository;
+    protected $ipInfoRepository;
 
   /**
    * コンストラクタ
    * ロガー、ビュー、IP情報リポジトリを初期化
    */
-  public function __construct(LoggerInterface $logger, Twig $view, IpInfoRepository $ipInfoRepository)
-  {
-    parent::__construct($logger, $view);
-    $this->ipInfoRepository = $ipInfoRepository;
-    $this->logger->info("Start Top page.");
-  }
+    public function __construct(LoggerInterface $logger, Twig $view, IpInfoRepository $ipInfoRepository)
+    {
+        parent::__construct($logger, $view);
+        $this->ipInfoRepository = $ipInfoRepository;
+        $this->logger->info("Start Top page.");
+    }
 }

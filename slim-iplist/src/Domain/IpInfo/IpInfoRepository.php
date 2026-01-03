@@ -18,11 +18,11 @@ interface IpInfoRepository
    * @param string $in_ip 検索対象IPアドレス
    * @return array IPアドレスのレジストリ情報
    */
-  public function findIpInformation(string $in_ip): array;
+    public function findIpInformation(string $in_ip): array;
 
   /**
    * 日本のサブネット一覧を取得
    * @return array 日本のサブネット情報一覧
    */
-  public function findJpSubnets(): array;
+    public function findJpSubnets(): array;
 }
