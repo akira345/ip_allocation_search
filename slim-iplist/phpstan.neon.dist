@@ -2,3 +2,12 @@ parameters:
   level: 4
   paths:
     - src
+    - app
+    - config
+  bootstrapFiles:
+    - app/function.php
+    - config/db.php
+  treatPhpDocTypesAsCertain: false
+  ignoreErrors:
+    - '#Instanceof between Throwable and Throwable will always evaluate to true#'
+    - '#Call to function is_string\(\) with 0 will always evaluate to false#'
