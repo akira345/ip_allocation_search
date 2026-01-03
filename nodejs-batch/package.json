@@ -4,7 +4,9 @@
   "description": "IP Registry Data Processing Batch System - Node.js Implementation",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "lint": "eslint ./src --fix",
+    "format": "prettier --write './src'"
   },
   "keywords": [
     "ip-registry",
@@ -14,14 +16,23 @@
     "ipv6",
     "cidr"
   ],
-  "author": "System Administrator",
+  "author": "Akira345",
   "license": "MIT",
+  "devDependencies": {
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-n": "^17.23.1",
+    "eslint-plugin-promise": "^7.2.1",
+    "eslint-plugin-security": "^3.0.1",
+    "neostandard": "^0.12.2",
+    "prettier": "^3.7.4"
+  },
   "dependencies": {
     "cidr-tools": "^11.0.3",
     "dotenv": "^17.2.3",
-    "mysql2": "^3.6.5",
+    "mysql2": "^3.16.0",
     "undici": "^7.16.0",
-    "yargs": "^17.7.2"
+    "yargs": "^18.0.0"
   },
   "engines": {
     "node": ">=22.12.0"
