@@ -152,17 +152,17 @@ async function main() {
         const promises = registries.map((reg) => finalProcessor.processRegistry(reg, processOptions));
         const parallelResults = await Promise.allSettled(promises);
 
-        for (let i = 0; i < parallelResults.length; i++) {
-          if (parallelResults[i].status === 'fulfilled') {
-            results.push(parallelResults[i].value);
-            if (parallelResults[i].value.success) {
+        for (const [i, result] of parallelResults.entries()) {
+          if (result.status === 'fulfilled') {
+            results.push(result.value);
+            if (result.value.success) {
               await finalizeRegistry(finalDbManager, registries[i]);
             }
           } else {
             results.push({
               success: false,
               registry: registries[i],
-              error: parallelResults[i].reason.message,
+              error: result.reason.message,
             });
           }
         }
