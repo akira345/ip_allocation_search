@@ -23,7 +23,6 @@ class ShowIpInfo extends IpInfoAction
    */
   protected function action(): Response
   {
-    $render = array();
     // GETパラメータからin_ipを取得
     $query = $this->resolveQuery('in_ip');
     $this->logger->info("Search Query is " . $query);
@@ -50,12 +49,11 @@ class ShowIpInfo extends IpInfoAction
             $in_ip = $records[0]['ip'];
           } else {
             // どちらも引けなかった場合は無効なリクエストとする
-            $render = array(
+            $render = createRenderArray([
               "in_ip" => $in_ip,
-              "data_flg" => "NG",
               "error" => "無効なホスト名です。",
-              "hostname" => $in_hostname,
-            );
+              "hostname" => $in_hostname
+            ]);
             $this->logger->info("Invalid Hostname " . $in_hostname);
             return $this->view->render($this->response, 'index.html', $render);
           }
@@ -65,12 +63,10 @@ class ShowIpInfo extends IpInfoAction
         // IPアドレス直打ちの場合はIPv4かIPv6のみ受け付ける
         // グローバルIPのみ対象
         if(!filter_var($in_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6 | FILTER_FLAG_NO_RES_RANGE | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_GLOBAL_RANGE )) {
-          $render = array(
+          $render = createRenderArray([
             "in_ip" => $in_ip,
-            "data_flg" => "NG",
-            "error" => "無効なIPアドレスです。",
-            "hostname" => "",
-          );
+            "error" => "無効なIPアドレスです。"
+          ]);
           $this->logger->info("Invalid IP!! " . $in_ip);
           return $this->view->render($this->response, 'index.html', $render);
         }
@@ -85,4 +81,5 @@ class ShowIpInfo extends IpInfoAction
     // メインページをレンダリング
     return $this->view->render($this->response, 'index.html', $render);
   }
+
 }

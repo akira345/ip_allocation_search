@@ -34,7 +34,6 @@ class DbIpInfoRepository implements IpInfoRepository
 
   public function findIpInformation(string $in_ip): array
   {
-    $render = array();
     
     // IPv4とIPv6の両方に対応
     if (filter_var($in_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
@@ -45,18 +44,15 @@ class DbIpInfoRepository implements IpInfoRepository
       return $this->findIpv6Information($in_ip);
     } else {
       // 無効なIP
-      return array(
+      return createRenderArray([
         "in_ip" => $in_ip,
-        "data_flg" => "NG",
-        "error" => "無効なIPアドレスです。",
-        "hostname" => "",
-      );
+        "error" => "無効なIPアドレスです。"
+      ]);
     }
   }
 
   private function findIpv4Information(string $in_ip): array
   {
-    $render = array();
     
     // IPv4用のクエリ - 事前計算されたip_start_binaryとip_end_binaryを使用
     $sql = "SELECT 
@@ -87,11 +83,10 @@ class DbIpInfoRepository implements IpInfoRepository
       $stmt->bindParam(':ip', $in_ip, \PDO::PARAM_STR);
       $stmt->execute();
       
-      $render = array(
+      $render = createRenderArray([
         "in_ip" => $in_ip,
-        "data_flg" => "NG",
-        "hostname" => $this->getHostnameFromCache($in_ip),
-      );
+        "hostname" => $this->getHostnameFromCache($in_ip)
+      ]);
       
       if ($row = $stmt->fetch()) {
         // whoisデータとホスト名をキャッシュから取得
@@ -104,31 +99,29 @@ class DbIpInfoRepository implements IpInfoRepository
           $allocation_date = date("Y/m/d", strtotime($row["allocation_date"]));
         }
         
-        $render = array(
+        $render = createRenderArray([
+          "in_ip" => $in_ip,
+          "data_flg" => "OK",
+          "hostname" => $hostname,
+          "whois_data" => $whois_data,
+          "ip_version" => "IPv4",
           "registry_name" => $row["registry_name"],
           "country_code" => $row["country_code"],
+          "country_name" => $row["country_name"],
           "ip_address_text" => $row["ip_address_text"],
           "str_address_count" => number_format($row["address_count"]),
           "allocation_date" => $allocation_date,
           "status" => $row["status"],
           "netblock_cidr" => $row["netblock_cidr"],
-          "country_name" =>  $row["country_name"],
-          "in_ip" => $in_ip,
-          "data_flg" => "OK",
-          "whois_data" => $whois_data,
-          "hostname" => $hostname,
-          "ip_version" => "IPv4",
-          "registry_code" => $row["registry"],
-        );
+          "registry_code" => $row["registry"]
+        ]);
       }
     } catch (\PDOException $e) {
       $this->logger->error($e->getMessage());
-      $render = array(
+      $render = createRenderArray([
         "in_ip" => $in_ip,
-        "data_flg" => "NG",
-        "error" => "Database error",
-        "hostname" => "",
-      );
+        "error" => "Database error"
+      ]);
     }
     
     return $render;
@@ -136,7 +129,6 @@ class DbIpInfoRepository implements IpInfoRepository
 
   private function findIpv6Information(string $in_ip): array
   {
-    $render = array();
     
     // IPv6用のクエリ - 事前計算されたip_start_binaryとip_end_binaryを使用
     $sql = "SELECT 
@@ -167,11 +159,10 @@ class DbIpInfoRepository implements IpInfoRepository
       $stmt->bindParam(':ip', $in_ip, \PDO::PARAM_STR);
       $stmt->execute();
       
-      $render = array(
+      $render = createRenderArray([
         "in_ip" => $in_ip,
-        "data_flg" => "NG",
-        "hostname" => $this->getHostnameFromCache($in_ip),
-      );
+        "hostname" => $this->getHostnameFromCache($in_ip)
+      ]);
       
       if ($row = $stmt->fetch()) {
         // whoisデータとホスト名をキャッシュから取得
@@ -184,32 +175,30 @@ class DbIpInfoRepository implements IpInfoRepository
           $allocation_date = date("Y/m/d", strtotime($row["allocation_date"]));
         }
         
-        $render = array(
+        $render = createRenderArray([
+          "in_ip" => $in_ip,
+          "data_flg" => "OK",
+          "hostname" => $hostname,
+          "whois_data" => $whois_data,
+          "ip_version" => "IPv6",
           "registry_name" => $row["registry_name"],
           "country_code" => $row["country_code"],
+          "country_name" => $row["country_name"],
           "ip_address_text" => $row["ip_address_text"],
           "str_address_count" => format_ipv6_address_count($row["prefix_length"]),
           "allocation_date" => $allocation_date,
           "status" => $row["status"],
           "netblock_cidr" => $row["netblock_cidr"],
-          "country_name" =>  $row["country_name"],
-          "in_ip" => $in_ip,
-          "data_flg" => "OK",
-          "whois_data" => $whois_data,
-          "hostname" => $hostname,
-          "ip_version" => "IPv6",
-          "prefix_length" => $row["prefix_length"],
           "registry_code" => $row["registry"],
-        );
+          "prefix_length" => $row["prefix_length"]
+        ]);
       }
     } catch (\PDOException $e) {
       $this->logger->error($e->getMessage());
-      $render = array(
+      $render = createRenderArray([
         "in_ip" => $in_ip,
-        "data_flg" => "NG",
-        "error" => "Database error",
-        "hostname" => "",
-      );
+        "error" => "Database error"
+      ]);
     }
     
     return $render;
@@ -217,7 +206,6 @@ class DbIpInfoRepository implements IpInfoRepository
 
   public function findJpSubnets(): array
   {
-    $render = array();
     
     // 新しいip_allocationsテーブルからJPのサブネットを取得
     $sql = "SELECT 
@@ -368,4 +356,5 @@ class DbIpInfoRepository implements IpInfoRepository
       return gethostbyaddr($ip_address) ?: $ip_address;
     }
   }
+
 }

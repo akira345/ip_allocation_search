@@ -26,3 +26,33 @@ function format_ipv6_address_count($prefix_length) {
     return number_format(pow(2, $host_bits));
   }
 }
+
+/**
+ * レンダリング変数配列を作成
+ * 初期値から指定されたキーのみを上書きして配列を作成
+ * @param array $overrides 上書きする値の配列
+ * @return array 完全な変数配列
+ */
+function createRenderArray(array $overrides = []): array
+{
+  $defaults = array(
+    "in_ip" => "",
+    "data_flg" => "NG",
+    "hostname" => "",
+    "error" => "",
+    "whois_data" => "",
+    "ip_version" => "",
+    "registry_name" => "",
+    "country_code" => "",
+    "country_name" => "",
+    "ip_address_text" => "",
+    "str_address_count" => "",
+    "allocation_date" => "",
+    "status" => "",
+    "netblock_cidr" => "",
+    "registry_code" => "",
+    "prefix_length" => ""
+  );
+  
+  return array_merge($defaults, $overrides);
+}

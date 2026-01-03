@@ -23,7 +23,6 @@ class ShowIpListJp extends IpInfoAction
    */
   protected function action(): Response
   {
-    $render = array();
     // 日本のサブネット情報を取得
     $render = $this->ipInfoRepository->findJpSubnets();
     $this->logger->info("Generate IPlist for JP.");
