@@ -221,15 +221,21 @@ class DbIpInfoRepository implements IpInfoRepository
       $stmt = $db->prepare($sql);
       $stmt->execute();
 
-      $render = array();
+      $render = [
+        "ipv4_netblocks" => Array(), 
+        "ipv6_netblocks" => Array()
+      ];
+      $ipv4_netblocks=Array();
+      $ipv6_netblocks=Array();
       while ($row = $stmt->fetch()) {
-        if (!empty($row["netblock_cidr"])) {
-          array_push($render, [
-            "netblock_cidr" => $row["netblock_cidr"], 
-            "ip_version" => $row["ip_version"]
-          ]);
+        if ($row["ip_version"] == 4) {
+          array_push($ipv4_netblocks, $row["netblock_cidr"]);
+        } elseif ($row["ip_version"] == 6) {
+          array_push($ipv6_netblocks, $row["netblock_cidr"]);
         }
       }
+      $render["ipv4_netblocks"] = $ipv4_netblocks;
+      $render["ipv6_netblocks"] = $ipv6_netblocks;
     } catch (\PDOException $e) {
       $this->logger->error($e->getMessage());
       echo "システムエラー";
