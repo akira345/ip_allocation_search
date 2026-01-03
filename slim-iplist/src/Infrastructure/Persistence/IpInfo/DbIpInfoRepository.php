@@ -222,6 +222,7 @@ class DbIpInfoRepository implements IpInfoRepository
       $stmt = $db->prepare($sql);
       $stmt->execute();
       
+      $render = array();
       while ($row = $stmt->fetch()) {
         if (!empty($row["netblock_cidr"])) {
           array_push($render, $row["netblock_cidr"]);
