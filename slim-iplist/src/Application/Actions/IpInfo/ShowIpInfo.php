@@ -23,8 +23,9 @@ class ShowIpInfo extends IpInfoAction
    */
   protected function action(): Response
   {
-    $render = createRenderArray();
-    
+    // 初期レンダリング変数を作成
+    $render = createRenderArray(["data_flg" => "OK"]);
+
     // GETパラメータからin_ipを取得
     $query = $this->resolveQuery('in_ip');
     $this->logger->info("Search Query is " . $query);
