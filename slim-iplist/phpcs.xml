@@ -13,4 +13,7 @@
 
     <!-- Paths to check -->
     <file>src</file>
+    <file>app</file>
+    <file>config</file>
+    <file>public</file>
 </ruleset>

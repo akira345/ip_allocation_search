@@ -12,7 +12,6 @@ use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
-
 use Slim\Views\Twig;
 use Twig\Loader\FilesystemLoader;
 use Monolog\Processor\MemoryUsageProcessor;
@@ -35,14 +34,14 @@ return function (ContainerBuilder $containerBuilder) {
             // ログファイルへの出力ハンドラー
             $handler = new StreamHandler($loggerSettings['path'], $loggerSettings['level']);
             $logger->pushHandler($handler);
-            
+
             // メモリ使用量とWebリクエスト情報を記録
-            $logger->pushProcessor(new MemoryUsageProcessor);
-            $logger->pushProcessor(new WebProcessor);
+            $logger->pushProcessor(new MemoryUsageProcessor());
+            $logger->pushProcessor(new WebProcessor());
 
             return $logger;
         },
-        
+
         // Twigテンプレートエンジン設定
         // HTMLテンプレートのレンダリングを担当
         Twig::class => function (ContainerInterface $c) {
@@ -60,7 +59,7 @@ return function (ContainerBuilder $containerBuilder) {
                     $loader->addPath($path);
                 }
             }
-            
+
             // Twigインスタンスの生成と設定適用
             $view = new Twig($loader, $viewSettings['settings']);
             return $view;

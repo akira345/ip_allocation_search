@@ -14,10 +14,10 @@ use Slim\App;
 return function (App $app) {
     // メインページ - IPアドレス検索フォームと結果表示
     $app->get('/', ShowIpInfo::class);
-    
+
     // 旧形式URL対応 - index.phpでのアクセスもサポート
     $app->get('/index.php', ShowIpInfo::class);
-    
+
     // JSON API - 日本のサブネット一覧を返す
     $app->get('/json', ShowIpListJp::class);
 };

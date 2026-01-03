@@ -26,7 +26,7 @@ $containerBuilder = new ContainerBuilder();
 
 // 本番環境ではコンパイルを有効にしてパフォーマンスを向上
 if (true) { // 本番環境では true に設定
-	$containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
+    $containerBuilder->enableCompilation(__DIR__ . '/../var/cache');
 }
 
 // アプリケーション設定の読み込みと適用
