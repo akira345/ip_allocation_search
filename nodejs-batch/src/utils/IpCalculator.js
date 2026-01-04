@@ -1,5 +1,5 @@
-const { parseCidr } = require('cidr-tools');
-const { stringifyIp } = require('ip-bigint');
+import { parseCidr } from 'cidr-tools';
+import { stringifyIp } from 'ip-bigint';
 /**
  * IPアドレス計算ユーティリティクラス
  */
@@ -151,4 +151,4 @@ class IpCalculator {
   }
 }
 
-module.exports = IpCalculator;
+export default IpCalculator;

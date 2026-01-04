@@ -2,6 +2,7 @@
   "name": "ip-registry-data-processor",
   "version": "1.0.0",
   "description": "IP Registry Data Processing Batch System - Node.js Implementation",
+  "type": "module",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",

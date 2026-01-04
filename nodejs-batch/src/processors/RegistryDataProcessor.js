@@ -1,6 +1,6 @@
-const IpCalculator = require('../utils/IpCalculator');
-const { Agent, setGlobalDispatcher } = require('undici');
-const dns = require('dns');
+import IpCalculator from '../utils/IpCalculator.js';
+import { Agent, setGlobalDispatcher } from 'undici';
+import dns from 'dns';
 
 dns.setDefaultResultOrder('ipv4first');
 
@@ -520,4 +520,4 @@ class RegistryDataProcessor {
   }
 }
 
-module.exports = RegistryDataProcessor;
+export default RegistryDataProcessor;

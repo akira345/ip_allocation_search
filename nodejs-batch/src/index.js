@@ -1,7 +1,8 @@
-const yargs = require('yargs');
-const readline = require('readline');
-const DatabaseManager = require('./utils/DatabaseManager');
-const RegistryDataProcessor = require('./processors/RegistryDataProcessor');
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+import readline from 'readline';
+import DatabaseManager from './utils/DatabaseManager.js';
+import RegistryDataProcessor from './processors/RegistryDataProcessor.js';
 
 /**
  * ユーザーに確認を求める関数
@@ -29,7 +30,7 @@ function askConfirmation(message) {
  * @throws {Error} 処理中のエラー
  */
 async function main() {
-  const argv = yargs
+  const argv = yargs(hideBin(process.argv))
     .option('registry', {
       alias: 'r',
       type: 'string',
@@ -272,12 +273,12 @@ function displayResults(results) {
   console.log(`合計: ${successCount}/${results.length} レジストリ成功, ${totalRecords.toLocaleString()} 件処理`);
 }
 
-// スクリプトが直接実行された場合
-if (require.main === module) {
+// スクリプトが直接実行された場合（ESM版）
+if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch((error) => {
     console.error('💥 予期しないエラー:', error);
     process.exit(1);
   });
 }
 
-module.exports = { main, finalizeRegistry };
+export { main, finalizeRegistry };

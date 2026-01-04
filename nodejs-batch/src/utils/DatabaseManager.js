@@ -1,15 +1,20 @@
-const mysql = require('mysql2/promise');
-const fs = require('fs').promises;
-const path = require('path');
+import mysql from 'mysql2/promise';
+import { promises as fs } from 'fs';
+import path from 'path';
+import { config as dotenvConfig } from 'dotenv';
+
+// ESM環境でのファイルパス取得（Node.js v20.11.0+）
+const __dirname = import.meta.dirname;
+const __filename = import.meta.filename;
 
 // 環境変数の読み込み（.envファイルがある場合）
 try {
-  require('dotenv').config();
+  dotenvConfig();
 } catch (error) {
   // dotenvが利用できない場合は環境変数のみを使用
 }
 
-const config = require('../config/database');
+import config from '../config/database.js';
 
 /**
  * データベース管理クラス
@@ -284,8 +289,7 @@ class DatabaseManager {
         throw new Error(`無効なまたは安全でないSQLファイルパス: ${filePath}`);
       }
       
-      // pathモジュールで正規化
-      const path = require('path');
+      // pathモジュールで正規化（ESM環境）
       const normalizedPath = path.resolve(filePath);
       
       // eslint-disable-next-line security/detect-non-literal-fs-filename
@@ -327,4 +331,4 @@ class DatabaseManager {
   }
 }
 
-module.exports = DatabaseManager;
+export default DatabaseManager;
