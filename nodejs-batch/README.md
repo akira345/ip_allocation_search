@@ -78,13 +78,13 @@ node src/index.js --environment development --migrate
 
 ```bash
 # 毎日 AM 3:00 に全レジストリデータを更新
-0 3 * * * cd /path/to/nodejs-batch && node src/index.js --environment production
+0 3 * * * cd /path/to/nodejs-batch && node --env-file .env ./src/index.js --environment production
 
 # 毎日 AM 3:30 に APNIC のみ更新（高頻度更新が必要な場合）
-30 3 * * * cd /path/to/nodejs-batch && node src/index.js --registry apnic --environment production
+30 3 * * * cd /path/to/nodejs-batch && node --env-file .env ./src/index.js --registry apnic --environment production
 
 # 並列処理で高速実行
-0 4 * * * cd /path/to/nodejs-batch && node src/index.js --parallel --environment production
+0 4 * * * cd /path/to/nodejs-batch && node --env-file .env ./src/index.js --parallel --environment production
 ```
 
 ## 設定
