@@ -31,10 +31,10 @@
         "slim/twig-view": "^3.3"
     },
     "require-dev": {
-        "jangregor/phpstan-prophecy": "2.2.0",
+        "jangregor/phpstan-prophecy": "2.3.0",
         "phpspec/prophecy-phpunit": "2.4.0",
         "phpstan/extension-installer": "1.4.3",
-        "phpstan/phpstan": "2.1.32",
+        "phpstan/phpstan": "2.1.39",
         "phpunit/phpunit": "11.5.55",
         "squizlabs/php_codesniffer": "4.0.1"
     },
