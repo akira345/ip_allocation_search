@@ -10,7 +10,7 @@ const __filename = import.meta.filename;
 // 環境変数の読み込み（.envファイルがある場合）
 try {
   dotenvConfig();
-} catch (error) {
+} catch {
   // dotenvが利用できない場合は環境変数のみを使用
 }
 
@@ -184,7 +184,7 @@ class DatabaseManager {
         try {
           const [count] = await this.connection.execute(`SELECT COUNT(*) as count FROM ${tableName}`);
           console.log(`  📈 ${tableName}: ${count[0].count}件`);
-        } catch (error) {
+        } catch {
           console.log(`  ❓ ${tableName}: テーブルが存在しません`);
         }
       }

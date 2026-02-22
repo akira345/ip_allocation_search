@@ -113,7 +113,7 @@ class RegistryDataProcessor {
       await this._logProcessStart(registryKey);
 
       // データダウンロード
-      const data = await this._downloadData(registry, options);
+      const data = await this._downloadData(registry);
 
       // データ解析
       const records = this._parseData(data, registryKey, registry.hasExtendedFormat, options);
@@ -151,11 +151,10 @@ class RegistryDataProcessor {
    * リトライ機能付き（最大3回）
    * @private
    * @param {Object} registry - レジストリ設定オブジェクト
-   * @param {Object} options - オプション
    * @returns {Promise<string>} ダウンロードしたデータ
    * @throws {Error} ダウンロードエラー時
    */
-  async _downloadData(registry, options = {}) {
+  async _downloadData(registry) {
     const url = registry.url;
     const maxRetries = 3;
 
@@ -389,7 +388,7 @@ class RegistryDataProcessor {
         const day = dateStr.substring(6, 8);
         return `${year}-${month}-${day}`;
       }
-    } catch (error) {
+    } catch {
       console.warn(`日付解析エラー: ${dateStr}`);
     }
 
