@@ -20,15 +20,15 @@
   "author": "Akira345",
   "license": "MIT",
   "devDependencies": {
-    "eslint-plugin-security": "^3.0.1",
+    "eslint-plugin-security": "^4.0.0",
     "oxlint": "^1.49.0",
-    "prettier": "^3.7.4"
+    "prettier": "^3.8.1"
   },
   "dependencies": {
-    "cidr-tools": "^11.0.3",
-    "dotenv": "^17.2.3",
-    "mysql2": "^3.16.0",
-    "undici": "^7.16.0",
+    "cidr-tools": "^11.0.10",
+    "dotenv": "^17.3.1",
+    "mysql2": "^3.17.4",
+    "undici": "^7.22.0",
     "yargs": "^18.0.0"
   },
   "engines": {
