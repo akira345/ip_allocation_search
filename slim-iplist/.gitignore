@@ -9,3 +9,4 @@
 /config/*.php
 /var/cache/*
 !/var/cache/.gitkeep
+/.phpunit.cache

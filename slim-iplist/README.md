@@ -143,6 +143,60 @@ tail -f logs/app.log
 'logErrorDetails' => true,
 ```
 
+## テスト
+
+### テスト実行（ローカル環境）
+
+**重要**: テストはDockerコンテナ内で実行する必要があります。
+
+```bash
+# Dockerコンテナを起動
+docker compose up -d
+
+# テスト実行スクリプトを使用
+./run-tests.sh all          # 全テスト実行
+./run-tests.sh unit         # ユニットテストのみ（DB不要）
+./run-tests.sh integration  # 統合テストのみ（DB必要）
+./run-tests.sh functional   # 機能テストのみ（DB必要）
+./run-tests.sh check        # コード品質チェック
+```
+
+### テスト環境準備
+
+```bash
+# Dockerコンテナ起動
+docker compose up -d
+
+# データ投入（nodejs-batchから）
+cd nodejs-batch
+echo "yes" | node src/index.js --environment development --migrate
+node src/index.js --environment development --test-mode --ipv4-limit 100 --ipv6-limit 50
+cd ../slim-iplist
+```
+
+### コード品質チェック
+
+```bash
+# コードスタイルチェック
+composer cs-check
+
+# コードスタイル自動修正
+composer cs-fix
+
+# 静的解析
+composer phpstan
+
+# 全チェック実行
+composer check
+```
+
+詳細は [TEST_IMPLEMENTATION.md](TEST_IMPLEMENTATION.md) を参照してください。
+
+## CI/CD
+
+- **GitHub Actions**: Pull Request/Push時に自動テスト実行
+- **Renovate**: 依存パッケージの自動更新とテスト成功時の自動マージ
+- **PHP Version**: 8.3固定（GitHub Actionsでも同一バージョンを使用）
 
 ## ライセンス
 

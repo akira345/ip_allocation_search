@@ -28,11 +28,11 @@ return function (ContainerBuilder $containerBuilder) {
                 ],
                 // Twigテンプレート設定
                 'view' => [
-                    'path' => '../templates',
+                    'path' => __DIR__ . '/../templates',
                     'settings' => [
                         'charset' => 'utf-8',
                         // テンプレートキャッシュディレクトリ
-                        'cache' => realpath('../templates/cache'),
+                        'cache' => realpath(__DIR__ . '/../templates/cache') ?: __DIR__ . '/../templates/cache',
                         // 開発時の自動リロード設定
                         'auto_reload' => true,
                         // 厳密な変数チェック

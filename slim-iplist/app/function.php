@@ -8,23 +8,25 @@
  * @param int $prefix_length プレフィックス長
  * @return string フォーマットされたアドレス数
  */
-function format_ipv6_address_count($prefix_length)
-{
-  // 空値チェック
-    if (empty($prefix_length)) {
-        return "N/A";
-    }
+if (!function_exists('format_ipv6_address_count')) {
+    function format_ipv6_address_count($prefix_length)
+    {
+      // 空値チェック
+        if (empty($prefix_length)) {
+            return "N/A";
+        }
 
-    $host_bits = 128 - intval($prefix_length);
+        $host_bits = 128 - intval($prefix_length);
 
-    if ($host_bits <= 0) {
-        return "1";
-    } elseif ($host_bits >= 64) {
-        return "約 " . number_format(pow(2, $host_bits)) . " (18+ quintillion)";
-    } elseif ($host_bits >= 32) {
-        return "約 " . number_format(pow(2, $host_bits)) . " (4+ billion)";
-    } else {
-        return number_format(pow(2, $host_bits));
+        if ($host_bits <= 0) {
+            return "1";
+        } elseif ($host_bits >= 64) {
+            return "約 " . number_format(pow(2, $host_bits)) . " (18+ quintillion)";
+        } elseif ($host_bits >= 32) {
+            return "約 " . number_format(pow(2, $host_bits)) . " (4+ billion)";
+        } else {
+            return number_format(pow(2, $host_bits));
+        }
     }
 }
 
@@ -34,26 +36,28 @@ function format_ipv6_address_count($prefix_length)
  * @param array $overrides 上書きする値の配列
  * @return array 完全な変数配列
  */
-function createRenderArray(array $overrides = []): array
-{
-    $defaults = [
-    "in_ip" => "",
-    "data_flg" => "NG",
-    "hostname" => "",
-    "error" => "",
-    "whois_data" => "",
-    "ip_version" => "",
-    "registry_name" => "",
-    "country_code" => "",
-    "country_name" => "",
-    "ip_address_text" => "",
-    "str_address_count" => "",
-    "allocation_date" => "",
-    "status" => "",
-    "netblock_cidr" => "",
-    "registry_code" => "",
-    "prefix_length" => ""
-    ];
+if (!function_exists('createRenderArray')) {
+    function createRenderArray(array $overrides = []): array
+    {
+        $defaults = [
+        "in_ip" => "",
+        "data_flg" => "NG",
+        "hostname" => "",
+        "error" => "",
+        "whois_data" => "",
+        "ip_version" => "",
+        "registry_name" => "",
+        "country_code" => "",
+        "country_name" => "",
+        "ip_address_text" => "",
+        "str_address_count" => "",
+        "allocation_date" => "",
+        "status" => "",
+        "netblock_cidr" => "",
+        "registry_code" => "",
+        "prefix_length" => ""
+        ];
 
-    return array_merge($defaults, $overrides);
+        return array_merge($defaults, $overrides);
+    }
 }

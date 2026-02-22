@@ -158,6 +158,55 @@ jobs:
           node src/index.js --environment development --test-mode --ipv4-limit 50 --ipv6-limit 30 --registry apnic
         continue-on-error: true
 
+      # ===================================
+      # slim-iplist PHP Tests
+      # ===================================
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo, pdo_mysql, json
+          coverage: none
+          tools: composer:v2
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        working-directory: ./slim-iplist
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install PHP dependencies
+        working-directory: ./slim-iplist
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Run PHP linter (phpcs)
+        working-directory: ./slim-iplist
+        run: composer run-script cs-check
+        continue-on-error: true
+
+      - name: Run PHPStan
+        working-directory: ./slim-iplist
+        run: composer run-script phpstan
+        continue-on-error: true
+
+      - name: Run PHPUnit tests
+        working-directory: ./slim-iplist
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: test_user
+          DB_PASSWORD: test_password
+          DB_NAME: test_ip_allocations
+        run: composer run-script test
+
   # Renovate用の自動マージジョブ
   auto-merge:
     name: Auto-merge Renovate PRs
