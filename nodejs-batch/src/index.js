@@ -75,6 +75,7 @@ async function main() {
       ['environment'],
       '❌ 実行環境の指定は必須です。-e または --environment オプションで指定してください。',
     )
+    .strict()
     .help()
     .alias('help', 'h').argv;
 
