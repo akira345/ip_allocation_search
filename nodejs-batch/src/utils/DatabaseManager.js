@@ -1,11 +1,12 @@
 import mysql from 'mysql2/promise';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { config as dotenvConfig } from 'dotenv';
 
-// ESM環境でのファイルパス取得（Node.js v20.11.0+）
-const __dirname = import.meta.dirname;
-const __filename = import.meta.filename;
+// ESM環境でのファイルパス取得
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // 環境変数の読み込み（.envファイルがある場合）
 try {
@@ -61,6 +62,7 @@ class DatabaseManager {
   async disconnect() {
     if (this.connection) {
       await this.connection.end();
+      this.connection = null;
       console.log('✅ データベース接続を終了しました');
     }
   }

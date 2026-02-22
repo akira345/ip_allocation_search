@@ -1,0 +1,184 @@
+name: Test CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+  # Renovateの自動PRに対応
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Run Tests with MySQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    # MySQLサービスコンテナ
+    # MySQL 8.4 LTS使用（8.5からパスワード認証の変更あり）
+    # ローカル開発環境のakira345/mysql8-ja_jp-locale:latest（8.4.8）と互換性を保つ
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root_password
+          MYSQL_DATABASE: test_ip_allocations
+          MYSQL_USER: test_user
+          MYSQL_PASSWORD: test_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'nodejs-batch/.node-version'
+          cache: 'npm'
+          cache-dependency-path: nodejs-batch/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./nodejs-batch
+        run: npm ci
+
+      - name: Wait for MySQL
+        run: |
+          echo "Waiting for MySQL to be ready..."
+          for i in {1..30}; do
+            if mysqladmin ping -h 127.0.0.1 -u root -proot_password --silent; then
+              echo "MySQL is ready!"
+              break
+            fi
+            echo "Waiting for MySQL... ($i/30)"
+            sleep 2
+          done
+
+      - name: Setup test environment
+        working-directory: ./nodejs-batch
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: test_user
+          DB_PASSWORD: test_password
+          DB_NAME: test_ip_allocations
+        run: |
+          # .env.testファイルの生成
+          echo "DB_HOST=127.0.0.1" > .env.test
+          echo "DB_PORT=3306" >> .env.test
+          echo "DB_USER=test_user" >> .env.test
+          echo "DB_PASSWORD=test_password" >> .env.test
+          echo "DB_NAME=test_ip_allocations" >> .env.test
+
+      - name: Run database migration
+        working-directory: ./nodejs-batch
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: test_user
+          DB_PASSWORD: test_password
+          DB_NAME: test_ip_allocations
+        run: |
+          # マイグレーション実行（yesを自動入力）
+          echo "yes" | node src/index.js --environment development --migrate
+
+      - name: Run linter
+        working-directory: ./nodejs-batch
+        run: npm run lint
+
+      - name: Run unit tests
+        working-directory: ./nodejs-batch
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: test_user
+          DB_PASSWORD: test_password
+          DB_NAME: test_ip_allocations
+        run: npm run test:unit
+
+      - name: Run integration tests
+        working-directory: ./nodejs-batch
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: test_user
+          DB_PASSWORD: test_password
+          DB_NAME: test_ip_allocations
+        run: npm run test:integration
+
+      - name: Run E2E tests
+        working-directory: ./nodejs-batch
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: test_user
+          DB_PASSWORD: test_password
+          DB_NAME: test_ip_allocations
+        run: npm run test:e2e
+
+      - name: Run all tests with coverage
+        working-directory: ./nodejs-batch
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: test_user
+          DB_PASSWORD: test_password
+          DB_NAME: test_ip_allocations
+        run: npm run test:coverage
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          files: ./nodejs-batch/coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+      - name: Test with limited data (Test Mode)
+        working-directory: ./nodejs-batch
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: test_user
+          DB_PASSWORD: test_password
+          DB_NAME: test_ip_allocations
+        run: |
+          # テストモードで実際に少量のデータ処理を実行
+          node src/index.js --environment development --test-mode --ipv4-limit 50 --ipv6-limit 30 --registry apnic
+        continue-on-error: true
+
+  # Renovate用の自動マージジョブ
+  auto-merge:
+    name: Auto-merge Renovate PRs
+    needs: test
+    runs-on: ubuntu-latest
+    if: |
+      github.actor == 'renovate[bot]' &&
+      github.event_name == 'pull_request'
+    
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Auto-approve
+        uses: hmarr/auto-approve-action@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable auto-merge
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -3,15 +3,53 @@
     "config:base"
   ],
   "timezone": "Asia/Tokyo",
+  "schedule": [
+    "before 6am on Monday"
+  ],
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "stabilityDays": 3,
   "packageRules": [
     {
+      "description": "Automerge non-major updates if tests pass",
       "updateTypes": [
         "minor",
         "patch",
         "pin",
         "digest"
       ],
-      "automerge": true
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "squash",
+      "platformAutomerge": true,
+      "requiredStatusChecks": [
+        "test"
+      ]
+    },
+    {
+      "description": "Require manual review for major updates",
+      "updateTypes": [
+        "major"
+      ],
+      "automerge": false,
+      "labels": [
+        "breaking-change"
+      ]
+    },
+    {
+      "description": "Group security updates with high priority",
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true,
+      "groupName": "security updates",
+      "labels": [
+        "security"
+      ]
     }
   ]
 }

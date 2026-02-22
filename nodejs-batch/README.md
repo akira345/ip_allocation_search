@@ -220,6 +220,64 @@ node src/index.js --registry apnic --environment development
 node src/index.js --test-mode --ipv4-limit 50 --ipv6-limit 30 --environment development
 ```
 
+## テスト
+
+### テスト実行
+
+プロジェクトには Jest を使用した包括的なテストスイートが含まれています。
+
+```bash
+# 全テスト実行
+npm test
+
+# ユニットテストのみ
+npm run test:unit
+
+# 統合テストのみ
+npm run test:integration
+
+# E2Eテストのみ
+npm run test:e2e
+
+# カバレッジレポート付き実行
+npm run test:coverage
+
+# ウォッチモード（開発時）
+npm run test:watch
+```
+
+### テスト環境のセットアップ
+
+テストを実行する前にテスト用データベースのセットアップが必要です：
+
+```bash
+# 1. .env.testファイルを作成
+cp .env.test.example .env.test
+
+# 2. テスト用データベースへ接続情報を設定
+# .env.testファイルを編集
+
+# 3. マイグレーション実行
+node src/index.js --environment development --migrate
+```
+
+### CI/CD
+
+GitHub Actions を使用した自動テストが設定されています。
+
+- **プッシュ/PR時**: 全テストが自動実行されます
+- **Renovateの依存関係更新**: テスト成功後に自動マージされます（minor/patch）
+- **メジャーバージョン更新**: 手動レビューが必要です
+
+ワークフロー設定: `.github/workflows/test.yml`
+
+### テストカバレッジ
+
+カバレッジ閾値:
+- ブランチカバレッジ: 70%
+- 関数カバレッジ: 70%
+- ライン・ステートメントカバレッジ: 70%
+
 ## 開発者向け情報
 
 ### 新しいレジストリの追加

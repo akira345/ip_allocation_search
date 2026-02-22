@@ -6,13 +6,14 @@
 export default {
   /**
    * 開発環境用データベース設定
+   * 環境変数が設定されている場合はそちらを優先
    */
   development: {
-    host: '127.0.0.1',
-    port: 3306,
-    user: 'test',
-    password: 'passwd',
-    database: 'test_db',
+    host: process.env.DB_HOST || '127.0.0.1',
+    port: process.env.DB_PORT || 3306,
+    user: process.env.DB_USER || 'test',
+    password: process.env.DB_PASSWORD || 'passwd',
+    database: process.env.DB_NAME || 'test_db',
     charset: 'utf8mb4',
     timezone: '+09:00',
   },
