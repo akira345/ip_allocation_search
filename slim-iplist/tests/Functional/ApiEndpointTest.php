@@ -35,9 +35,7 @@ class ApiEndpointTest extends TestCase
      */
     private function createApplication(): App
     {
-        // テスト用データベース設定の読み込み
-        require __DIR__ . '/../../config/db.test.php';
-        require __DIR__ . '/../../app/function.php';
+        // getDB() と app/function.php は tests/bootstrap.php で読み込み済み
 
         // DIコンテナビルダー
         $containerBuilder = new ContainerBuilder();
