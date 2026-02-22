@@ -1,0 +1,60 @@
+{
+  // oxlint設定ファイル - 高速JavaScriptリンター
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+
+  // JSプラグイン（ESLintプラグインをoxlintで使用）
+  // eslint-plugin-securityはoxlintにネイティブサポートがないためJSプラグインとして読み込む
+  "jsPlugins": ["eslint-plugin-security"],
+  
+  "rules": {
+    // === ESLintコアルール（oxlintネイティブサポート） ===
+    
+    // 定数条件の検出（例: if (true) {...}）
+    // checkLoops: false でループ内の定数条件（while(true)など）を許容
+    "no-constant-condition": ["warn", { "checkLoops": false }],
+    
+    // async関数内でawaitが使用されていない場合に警告
+    "require-await": "warn",
+    
+    // === セキュリティルール（eslint-plugin-security経由） ===
+    
+    // 安全でない正規表現の検出（ReDoS攻撃のリスク）
+    "security/detect-unsafe-regex": "error",
+    
+    // Buffer().noAssert の使用を警告（非推奨で危険）
+    "security/detect-buffer-noassert": "warn",
+    
+    // child_process の使用を検出（コマンドインジェクションのリスク）
+    "security/detect-child-process": "warn",
+    
+    // Mustacheエスケープの無効化を検出（XSSのリスク）
+    "security/detect-disable-mustache-escape": "warn",
+    
+    // eval()の動的使用を検出（任意コード実行のリスク）
+    "security/detect-eval-with-expression": "warn",
+    
+    // new Buffer()の使用を検出（Buffer.from()を推奨）
+    "security/detect-new-buffer": "warn",
+    
+    // CSRFトークン検証前のメソッドオーバーライドを検出
+    "security/detect-no-csrf-before-method-override": "warn",
+    
+    // 非リテラルなファイル名でのfs操作を検出（パストラバーサルのリスク）
+    "security/detect-non-literal-fs-filename": "warn",
+    
+    // 非リテラルな正規表現を検出（ReDoSのリスク）
+    "security/detect-non-literal-regexp": "warn",
+    
+    // 非リテラルなrequire()を検出（任意モジュール読み込みのリスク）
+    "security/detect-non-literal-require": "warn",
+    
+    // オブジェクトインジェクションの可能性を検出（プロトタイプ汚染のリスク）
+    "security/detect-object-injection": "warn",
+    
+    // タイミング攻撃の可能性がある文字列比較を検出
+    "security/detect-possible-timing-attacks": "warn",
+    
+    // 暗号学的に安全でない疑似乱数生成器の使用を検出
+    "security/detect-pseudoRandomBytes": "warn"
+  }
+}
