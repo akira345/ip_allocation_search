@@ -1,6 +1,6 @@
 {
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
   "timezone": "Asia/Tokyo",
   "schedule": [
@@ -8,11 +8,11 @@
   ],
   "prConcurrentLimit": 5,
   "prHourlyLimit": 2,
-  "stabilityDays": 3,
+  "minimumReleaseAge": "3 days",
   "packageRules": [
     {
       "description": "Automerge non-major updates if tests pass",
-      "updateTypes": [
+      "matchUpdateTypes": [
         "minor",
         "patch",
         "pin",
@@ -21,14 +21,11 @@
       "automerge": true,
       "automergeType": "pr",
       "automergeStrategy": "squash",
-      "platformAutomerge": true,
-      "requiredStatusChecks": [
-        "test"
-      ]
+      "platformAutomerge": true
     },
     {
       "description": "Require manual review for major updates",
-      "updateTypes": [
+      "matchUpdateTypes": [
         "major"
       ],
       "automerge": false,
@@ -38,9 +35,6 @@
     },
     {
       "description": "Group security updates with high priority",
-      "matchPackagePatterns": [
-        "*"
-      ],
       "matchUpdateTypes": [
         "patch"
       ],
@@ -49,6 +43,9 @@
       "groupName": "security updates",
       "labels": [
         "security"
+      ],
+      "matchPackageNames": [
+        "*"
       ]
     }
   ]
