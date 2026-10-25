@@ -23,7 +23,7 @@ jobs:
     # ローカル開発環境のakira345/mysql8-ja_jp-locale:latest（8.4.8）と互換性を保つ
     services:
       mysql:
-        image: mysql:8.4
+        image: mysql:26.10
         env:
           MYSQL_ROOT_PASSWORD: root_password
           MYSQL_DATABASE: test_ip_allocations
